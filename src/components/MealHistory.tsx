@@ -1,4 +1,4 @@
-import { Calendar, Clock, Loader2 } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import { useUserMeals } from '@/hooks/useSupabaseData';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -7,7 +7,7 @@ const MealHistory = () => {
 
   if (isLoading) {
     return (
-      <Skeleton className="glass-card p-6 min-h-[180px] flex flex-col animate-fade-in">
+      <Skeleton className="bg-white p-6 min-h-[180px] flex flex-col animate-fade-in rounded-2xl border border-[#E5E5E5] shadow-sm">
         <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
         <div className="h-20 w-full rounded bg-muted animate-pulse" />
       </Skeleton>
@@ -16,9 +16,9 @@ const MealHistory = () => {
 
   if (error) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Calendar className="w-5 h-5" />
+      <div className="bg-white p-6 rounded-2xl border border-[#E5E5E5] shadow-sm animate-fade-in">
+        <h3 className="text-lg font-semibold text-[#222] mb-6 flex items-center space-x-2">
+          <Calendar className="w-5 h-5 text-[#38B000]" />
           <span>История приёмов пищи</span>
         </h3>
         <div className="text-center text-gray-400 py-8">
@@ -32,14 +32,14 @@ const MealHistory = () => {
 
   if (mealsData.length === 0) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Calendar className="w-5 h-5" />
+      <div className="bg-white p-6 rounded-2xl border border-[#E5E5E5] shadow-sm animate-fade-in">
+        <h3 className="text-lg font-semibold text-[#222] mb-6 flex items-center space-x-2">
+          <Calendar className="w-5 h-5 text-[#38B000]" />
           <span>История приёмов пищи</span>
         </h3>
         <div className="text-center py-8">
           <div className="text-4xl mb-4">🍽️</div>
-          <p className="text-gray-300 mb-2">История питания пуста</p>
+          <p className="text-gray-400 mb-2">История питания пуста</p>
           <p className="text-sm text-gray-400">Добавьте приёмы пищи через Telegram-бот, чтобы они появились здесь</p>
         </div>
       </div>
@@ -89,29 +89,29 @@ const MealHistory = () => {
   };
 
   return (
-    <div className="glass-card p-6 animate-fade-in">
+    <div className="bg-white p-6 rounded-2xl border border-[#E5E5E5] shadow-sm animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
-          <Calendar className="w-5 h-5" />
+        <h3 className="text-lg font-semibold text-[#222] flex items-center space-x-2">
+          <Calendar className="w-5 h-5 text-[#38B000]" />
           <span>История приёмов пищи</span>
         </h3>
-        <span className="text-sm text-fitness-blue">{mealsData.length} записей</span>
+        <span className="text-sm text-[#38B000]">{mealsData.length} записей</span>
       </div>
       <div className="space-y-4 max-h-96 overflow-y-auto">
         {mealsData.slice(0, 10).map((meal, index) => (
-          <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-lg bg-glass-bg border border-glass-border hover:bg-gray-800/50 transition-colors">
+          <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-xl bg-[#F6FBF4] border border-[#E5E5E5] hover:bg-[#E0F2FE] transition-colors">
             <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-gradient-to-br from-fitness-green to-fitness-blue rounded-lg flex items-center justify-center text-white text-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-lg flex items-center justify-center text-white text-lg">
                 {getMealTypeIcon(meal.meal_type)}
               </div>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-1">
-                <h4 className="text-white font-medium truncate">{meal.dish}</h4>
-                <span className="text-xs text-fitness-green font-medium">{meal.kcal} ккал</span>
+                <h4 className="text-[#222] font-medium truncate">{meal.dish}</h4>
+                <span className="text-xs text-[#38B000] font-medium">{meal.kcal} ккал</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-400 mb-1">
-                <Clock className="w-3 h-3" />
+              <div className="flex items-center space-x-2 text-sm text-gray-500 mb-1">
+                <Clock className="w-3 h-3 text-[#3B82F6]" />
                 <span>{formatTime(meal.eaten_at)}</span>
                 <span>•</span>
                 <span>{getMealTypeName(meal.meal_type)}</span>
@@ -129,7 +129,7 @@ const MealHistory = () => {
       </div>
       {mealsData.length > 10 && (
         <div className="text-center mt-4">
-          <button className="text-fitness-blue hover:text-blue-400 text-sm font-medium transition-colors">
+          <button className="text-[#3B82F6] hover:text-[#38B000] text-sm font-medium transition-colors">
             Показать ещё {mealsData.length - 10} записей
           </button>
         </div>

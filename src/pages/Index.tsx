@@ -62,7 +62,7 @@ const Index = () => {
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="mb-8">
-          <DatabaseStatus />
+        <DatabaseStatus />
         </div>
         <div className="glass-card mb-10 fade-in">
           <h1 className="text-3xl font-bold card-title mb-2">Добро пожаловать, {profileLoading ? 'Загрузка...' : getUserName()}!</h1>
@@ -89,11 +89,11 @@ const Index = () => {
             </section>
             {/* PRO Аналитика */}
             <section className="glass-card fade-in">
-              <ProAnalytics />
+            <ProAnalytics />
             </section>
             {/* AI рекомендации */}
             <section className="glass-card fade-in">
-              <AIRecommendation />
+            <AIRecommendation />
             </section>
             {/* История приёмов пищи */}
             <section id="history" className="glass-card fade-in">
@@ -103,27 +103,27 @@ const Index = () => {
           {/* Правая колонка */}
           <div className="lg:col-span-4 space-y-8">
             <section className="glass-card fade-in">
-              <ActionCards />
+            <ActionCards />
             </section>
             {/* PRO блоки */}
             <section className="glass-card fade-in">
-              <ProBlock
-                title="Чат с нутрициологом"
-                description="Персональные консультации с профессиональным нутрициологом"
-                icon={<MessageSquare className="w-6 h-6 text-fitness-purple" />}
-                buttonText="Скоро"
-              >
-                <div className="p-6">
-                  <div className="text-center py-8">
-                    <div className="text-4xl mb-3">👨‍⚕️</div>
+            <ProBlock
+              title="Чат с нутрициологом"
+              description="Персональные консультации с профессиональным нутрициологом"
+              icon={<MessageSquare className="w-6 h-6 text-fitness-purple" />}
+              buttonText="Скоро"
+            >
+              <div className="p-6">
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-3">👨‍⚕️</div>
                     <p className="text-lg font-semibold mb-2 text-[#1e3a1a]">Чат с нутрициологом</p>
                     <p className="text-sm text-[#4b5563]">Скоро вы сможете общаться с профессиональным нутрициологом и получать персональные рекомендации!</p>
-                  </div>
                 </div>
-              </ProBlock>
+              </div>
+            </ProBlock>
             </section>
             <section className="glass-card fade-in">
-              <ProReports />
+            <ProReports />
             </section>
           </div>
         </div>

@@ -127,11 +127,6 @@ const Header = () => {
                         <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </div>
-                    {user.is_pro && (
-                      <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#38B000] text-white">
-                        PRO
-                      </div>
-                    )}
                     <Button
                       variant="destructive"
                       className="w-full mt-4"

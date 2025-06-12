@@ -105,13 +105,13 @@ export const useLatestDigest = () => {
       if (!chatId) throw new Error('User not authenticated');
       
       try {
-        const { data, error } = await supabase
-          .from('digests')
-          .select('*')
-          .eq('chat_id', chatId)
-          .order('for_date', { ascending: false })
-          .limit(1)
-          .single();
+      const { data, error } = await supabase
+        .from('digests')
+        .select('*')
+        .eq('chat_id', chatId)
+        .order('for_date', { ascending: false })
+        .limit(1)
+        .single();
 
         if (error) {
           if (error.code === 'PGRST116') {
@@ -122,7 +122,7 @@ export const useLatestDigest = () => {
           throw error;
         }
 
-        return data;
+      return data;
       } catch (error) {
         console.error('Unexpected error in useLatestDigest:', error);
         throw error;
