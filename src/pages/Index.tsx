@@ -12,7 +12,6 @@ import ActionCards from '@/components/ActionCards';
 import ProAnalytics from '@/components/ProAnalytics';
 import ProReports from '@/components/ProReports';
 import DatabaseStatus from '@/components/DatabaseStatus';
-import ProBlock from '@/components/ProBlock';
 import { MessageSquare } from 'lucide-react';
 
 const Index = () => {
@@ -107,20 +106,11 @@ const Index = () => {
             </section>
             {/* PRO блоки */}
             <section className="glass-card fade-in">
-            <ProBlock
-              title="Чат с нутрициологом"
-              description="Персональные консультации с профессиональным нутрициологом"
-              icon={<MessageSquare className="w-6 h-6 text-fitness-purple" />}
-              buttonText="Скоро"
-            >
-              <div className="p-6">
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-3">👨‍⚕️</div>
-                    <p className="text-lg font-semibold mb-2 text-[#1e3a1a]">Чат с нутрициологом</p>
-                    <p className="text-sm text-[#4b5563]">Скоро вы сможете общаться с профессиональным нутрициологом и получать персональные рекомендации!</p>
-                </div>
+              <div className="text-center py-8">
+                <div className="text-4xl mb-3">👨‍⚕️</div>
+                <p className="text-lg font-semibold mb-2 text-[#1e3a1a]">Чат с нутрициологом</p>
+                <p className="text-sm text-[#4b5563]">Скоро вы сможете общаться с профессиональным нутрициологом и получать персональные рекомендации!</p>
               </div>
-            </ProBlock>
             </section>
             <section className="glass-card fade-in">
             <ProReports />
