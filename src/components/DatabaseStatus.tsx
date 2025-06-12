@@ -3,6 +3,7 @@ import { useUserProfile, isSupabaseConfigured } from '@/hooks/useSupabaseData';
 import { testSupabaseConnection } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DatabaseStatus = () => {
   const { error, isLoading } = useUserProfile();
@@ -20,7 +21,14 @@ const DatabaseStatus = () => {
     }
   };
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <Skeleton className="glass-card p-4 min-h-[80px] flex flex-col animate-fade-in">
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-6 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
+    );
+  }
 
   // Проверяем конфигурацию Supabase
   if (!isSupabaseConfigured()) {

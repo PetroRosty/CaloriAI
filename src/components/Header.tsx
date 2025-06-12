@@ -18,6 +18,19 @@ const Header = () => {
   const { toast } = useToast();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
 
+  // Динамическое имя пользователя: @username, имя или 'Гость'
+  const displayName = user?.username
+    ? `@${user.username}`
+    : user?.name
+      ? user.name
+      : 'Гость';
+  // Инициал для аватара
+  const avatarInitial = user?.username
+    ? user.username[0].toUpperCase()
+    : user?.name
+      ? user.name[0].toUpperCase()
+      : 'U';
+
   const handleLogout = () => {
     logout();
     toast({
@@ -95,7 +108,7 @@ const Header = () => {
                     variant="outline"
                     className="text-[#222] border-[#E5E5E5] hover:bg-[#F6FBF4] hover:text-[#38B000] hover:border-[#38B000]"
                   >
-                    {user.name || 'Профиль'}
+                    {displayName}
                   </Button>
                 </SheetTrigger>
                 <SheetContent className="bg-white border-[#E5E5E5]">
@@ -106,11 +119,11 @@ const Header = () => {
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full bg-[#F6FBF4] flex items-center justify-center">
                         <span className="text-[#38B000] font-semibold">
-                          {user.name?.[0]?.toUpperCase() || 'U'}
+                          {avatarInitial}
                         </span>
                       </div>
                       <div>
-                        <div className="font-medium text-[#222]">{user.name || 'Пользователь'}</div>
+                        <div className="font-medium text-[#222]">{displayName}</div>
                         <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </div>

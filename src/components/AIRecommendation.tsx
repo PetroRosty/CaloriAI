@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getRecommendationIcon = (type: string) => {
   switch (type) {
@@ -33,9 +34,8 @@ const AIRecommendation = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isLoading) setIsVisible(true);
+  }, [isLoading]);
 
   const calculateHoursUntilNextAnalysis = () => {
     if (!digest?.for_date) return 24;
@@ -69,15 +69,10 @@ const AIRecommendation = () => {
 
   if (isLoading) {
     return (
-      <div className={`bg-white p-6 rounded-[24px] shadow-[0_2px_16px_0_rgba(56,176,0,0.07)] transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="flex items-center space-x-2 mb-4">
-          <Sparkles className="w-5 h-5 text-[#38B000]" />
-          <h3 className="text-lg font-semibold text-[#222]">AI-диетолог</h3>
-        </div>
-        <div className="flex items-center justify-center h-20">
-          <Loader2 className="w-6 h-6 text-[#38B000] animate-spin" />
-        </div>
-      </div>
+      <Skeleton className={`bg-white p-6 rounded-[24px] shadow-[0_2px_16px_0_rgba(56,176,0,0.07)] min-h-[160px] animate-fade-in`}>
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-10 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 

@@ -1,5 +1,5 @@
 import { useTodayMeals, useUserProfile, calculateTodayTotals } from '@/hooks/useSupabaseData';
-import { Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const MacroCards = () => {
   const { data: todayMeals, isLoading: mealsLoading } = useTodayMeals();
@@ -9,11 +9,14 @@ const MacroCards = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="glass-card p-4">
-            <div className="flex items-center justify-center h-20">
-              <Loader2 className="w-6 h-6 text-fitness-blue animate-spin" />
-            </div>
-          </div>
+          <Skeleton
+            key={i}
+            className="glass-card p-4 min-h-[120px] flex flex-col justify-center"
+          >
+            <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+            <div className="h-4 w-2/3 mb-2 rounded bg-muted animate-pulse" />
+            <div className="h-3 w-full rounded bg-muted animate-pulse" />
+          </Skeleton>
         ))}
       </div>
     );

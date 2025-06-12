@@ -1,20 +1,16 @@
 import { Calendar, Clock, Loader2 } from 'lucide-react';
 import { useUserMeals } from '@/hooks/useSupabaseData';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const MealHistory = () => {
   const { data: meals, isLoading, error } = useUserMeals(3); // Последние 3 дня
 
   if (isLoading) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Calendar className="w-5 h-5" />
-          <span>История приёмов пищи</span>
-        </h3>
-        <div className="flex items-center justify-center h-32">
-          <Loader2 className="w-8 h-8 text-fitness-blue animate-spin" />
-        </div>
-      </div>
+      <Skeleton className="glass-card p-6 min-h-[180px] flex flex-col animate-fade-in">
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-20 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 

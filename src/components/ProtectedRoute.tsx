@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import LoginPage from '@/pages/LoginPage';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,9 +12,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fitness-blue"></div>
-      </div>
+      <Skeleton className="min-h-screen w-full flex items-center justify-center animate-fade-in">
+        <div className="h-12 w-1/3 rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 

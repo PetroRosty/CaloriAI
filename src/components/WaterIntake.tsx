@@ -1,18 +1,16 @@
-
 import { useTodayWater } from '@/hooks/useSupabaseData';
-import { Loader2, Droplets } from 'lucide-react';
+import { Droplets } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const WaterIntake = () => {
   const { data: waterData, isLoading, error } = useTodayWater();
   
   if (isLoading) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-4">Потребление воды</h3>
-        <div className="flex items-center justify-center h-20">
-          <Loader2 className="w-6 h-6 text-fitness-blue animate-spin" />
-        </div>
-      </div>
+      <Skeleton className="glass-card p-6 min-h-[120px] flex flex-col animate-fade-in">
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-10 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 

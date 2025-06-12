@@ -1,17 +1,16 @@
 import { Clock, Loader2 } from 'lucide-react';
 import { useTodayMeals } from '@/hooks/useSupabaseData';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const LastMealCard = () => {
   const { data: todayMeals, isLoading, error } = useTodayMeals();
 
   if (isLoading) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-4">Последний приём пищи</h3>
-        <div className="flex items-center justify-center h-20">
-          <Loader2 className="w-6 h-6 text-fitness-blue animate-spin" />
-        </div>
-      </div>
+      <Skeleton className="glass-card p-6 min-h-[120px] flex flex-col animate-fade-in">
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-10 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 

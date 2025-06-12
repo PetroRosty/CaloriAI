@@ -1,18 +1,16 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useUserMeals, getWeeklyCalorieData } from '@/hooks/useSupabaseData';
-import { Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const WeeklyChart = () => {
   const { data: weekMeals, isLoading, error } = useUserMeals(7);
 
   if (isLoading) {
     return (
-      <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-6">Рацион за неделю</h3>
-        <div className="flex items-center justify-center h-48">
-          <Loader2 className="w-8 h-8 text-fitness-blue animate-spin" />
-        </div>
-      </div>
+      <Skeleton className="glass-card p-6 min-h-[220px] flex flex-col animate-fade-in">
+        <div className="h-6 w-1/3 mb-4 rounded bg-muted animate-pulse" />
+        <div className="h-48 w-full rounded bg-muted animate-pulse" />
+      </Skeleton>
     );
   }
 
