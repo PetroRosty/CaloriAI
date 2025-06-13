@@ -54,17 +54,17 @@ const CalorieChart = () => {
   }
 
   const data = [
-    { name: 'Потреблено', value: consumed, color: '#3B82F6' },
-    { name: 'Осталось', value: remaining, color: '#374151' }
+    { name: 'Потреблено', value: consumed, color: '#38B000' },
+    { name: 'Осталось', value: remaining, color: '#D1D5DB' }
   ];
 
   const percentage = Math.round((consumed / dailyGoal) * 100);
 
   return (
     <div className="glass-card p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-white mb-4">Калории сегодня</h3>
+      <h3 className="text-lg font-semibold text-[#222] mb-4">Калории сегодня</h3>
       <div className="flex flex-col items-center">
-        <div className="relative w-48 h-48 mb-4">
+        <div className="relative w-full aspect-square max-w-sm mb-4">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -84,24 +84,24 @@ const CalorieChart = () => {
           </ResponsiveContainer>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="text-2xl font-bold text-white">{percentage}%</div>
-              <div className="text-sm text-gray-400">от цели</div>
+              <div className="text-2xl font-bold text-[#222]">{percentage}%</div>
+              <div className="text-base sm:text-sm text-[#4b5563]">от цели</div>
             </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 w-full">
           <div className="text-center">
-            <div className="text-sm text-gray-400 mb-1">Потреблено</div>
-            <div className="text-xl font-bold text-white">{consumed}</div>
-            <div className="text-xs text-gray-500">ккал</div>
+            <div className="text-base sm:text-sm text-[#4b5563] mb-1">Потреблено</div>
+            <div className="text-xl font-bold text-[#222]">{consumed}</div>
+            <div className="text-sm sm:text-xs text-[#6b7280]">ккал</div>
           </div>
           <div className="text-center">
-            <div className="text-sm text-gray-400 mb-1">Осталось</div>
-            <div className="text-xl font-bold text-white">{remaining}</div>
-            <div className="text-xs text-gray-500">ккал</div>
+            <div className="text-base sm:text-sm text-[#4b5563] mb-1">Осталось</div>
+            <div className="text-xl font-bold text-[#222]">{remaining}</div>
+            <div className="text-sm sm:text-xs text-[#6b7280]">ккал</div>
           </div>
         </div>
-        <div className="mt-4 text-sm text-fitness-blue">
+        <div className="mt-4 text-base sm:text-sm text-[#38B000]">
           Дневная цель: {dailyGoal} ккал
         </div>
       </div>

@@ -17,7 +17,7 @@ const WeeklyChart = () => {
   if (error) {
     return (
       <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-6">Рацион за неделю</h3>
+        <h3 className="text-lg font-semibold text-[#222] mb-6">Рацион за неделю</h3>
         <div className="text-center text-gray-400 py-8">
           <p>Ошибка загрузки данных за неделю</p>
         </div>
@@ -32,7 +32,7 @@ const WeeklyChart = () => {
     return (
       <div className="glass-card p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">Рацион за неделю</h3>
+          <h3 className="text-lg font-semibold text-[#222]">Рацион за неделю</h3>
         </div>
         <div className="text-center py-8">
           <div className="text-4xl mb-4">📊</div>
@@ -49,52 +49,52 @@ const WeeklyChart = () => {
   return (
     <div className="glass-card p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white">Рацион за неделю</h3>
+        <h3 className="text-lg font-semibold text-[#222]">Рацион за неделю</h3>
         <div className="text-right">
-          <div className="text-sm text-gray-400">Среднее за день</div>
-          <div className="text-lg font-semibold text-fitness-blue">{avgCalories.toLocaleString()} ккал</div>
+          <div className="text-sm text-[#4b5563]">Среднее за день</div>
+          <div className="text-lg font-semibold text-[#38B000]">{avgCalories.toLocaleString()} ккал</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
           <XAxis 
             dataKey="day" 
-            stroke="#9CA3AF"
-            tick={{ fill: '#9CA3AF' }}
+            stroke="#6b7280"
+            tick={{ fill: '#6b7280', fontSize: 12 }}
           />
           <YAxis 
-            stroke="#9CA3AF"
-            tick={{ fill: '#9CA3AF' }}
+            stroke="#6b7280"
+            tick={{ fill: '#6b7280', fontSize: 12 }}
             tickFormatter={(value) => `${value.toLocaleString()} ккал`}
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: 'rgba(17, 24, 39, 0.9)', 
-              border: '1px solid rgba(255, 255, 255, 0.1)', 
+              backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+              border: '1px solid rgba(0, 0, 0, 0.1)', 
               borderRadius: '8px',
               backdropFilter: 'blur(12px)'
             }}
-            labelStyle={{ color: '#F3F4F6' }}
+            labelStyle={{ color: '#222', fontSize: 14 }}
             formatter={(value: number) => [`${value.toLocaleString()} ккал`, 'Калории']}
             labelFormatter={(label) => `День: ${label}`}
           />
           <Line 
             type="monotone" 
             dataKey="calories" 
-            stroke="#3B82F6" 
+            stroke="#38B000" 
             strokeWidth={3}
-            dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6, stroke: '#3B82F6', strokeWidth: 2 }}
+            dot={{ fill: '#38B000', strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, stroke: '#38B000', strokeWidth: 2 }}
           />
         </LineChart>
       </ResponsiveContainer>
       <div className="mt-4 flex justify-between items-center text-sm">
         <div className="text-gray-400">
-          Общее потребление за неделю: <span className="text-white font-semibold">{totalCalories.toLocaleString()} ккал</span>
+          Общее потребление за неделю: <span className="text-[#222] font-semibold">{totalCalories.toLocaleString()} ккал</span>
         </div>
         <div className="text-gray-400">
-          Дней с данными: <span className="text-white font-semibold">{data.filter(day => day.calories > 0).length}</span>
+          Дней с данными: <span className="text-[#222] font-semibold">{data.filter(day => day.calories > 0).length}</span>
         </div>
       </div>
     </div>
