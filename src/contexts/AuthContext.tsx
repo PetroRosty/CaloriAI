@@ -127,8 +127,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     try {
+      await supabase.auth.signOut();
       localStorage.removeItem('diet-diary-user');
       localStorage.removeItem('diet-diary-user-date');
       dispatch({ type: 'LOGOUT' });

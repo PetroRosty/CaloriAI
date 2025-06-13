@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import FeedbackForm from './FeedbackForm';
+import { useNavigate } from 'react-router-dom';
 import { 
   Sheet, 
   SheetContent, 
@@ -16,6 +17,7 @@ import ContactForm from './ContactForm';
 const Header = () => {
   const { user, logout, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
 
   // Динамическое имя пользователя: @username, имя или 'Гость'
@@ -37,6 +39,7 @@ const Header = () => {
       title: "До свидания!",
       description: "Вы успешно вышли из системы.",
     });
+    navigate('/');
   };
 
   const scrollToSection = (sectionId: string) => {
