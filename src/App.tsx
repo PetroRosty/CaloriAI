@@ -7,7 +7,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProProvider } from "@/contexts/ProContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ChatIdAuthHandler from "@/components/ChatIdAuthHandler";
-import TestAuth from "@/components/TestAuth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -16,7 +15,6 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   return (
     <>
-      <TestAuth />
       <ChatIdAuthHandler />
       <Routes>
         <Route path="/" element={
