@@ -222,7 +222,7 @@ const Header = () => {
                     <Button
                       variant="destructive"
                       className="w-full mt-4"
-                      onClick={() => signOut()}
+                      onClick={handleLogout}
                     >
                       Выйти
                     </Button>
@@ -267,7 +267,7 @@ const Header = () => {
                     <Button
                       variant="destructive"
                       className="w-full mt-4"
-                      onClick={() => signOut()}
+                      onClick={handleLogout}
                     >
                       Выйти
                     </Button>
