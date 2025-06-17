@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, LogOut, MessageSquare, Menu } from 'lucide-react';
+import { User, LogOut, MessageSquare, Menu, Utensils } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -60,11 +60,7 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
               <div className="w-10 h-10 bg-[#38B000] rounded-xl flex items-center justify-center shadow-sm">
-                <img
-                  className="h-6 w-6"
-                  src="/logo.svg"
-                  alt="Diet Dashboard"
-                />
+                <Utensils className="w-6 h-6 text-white" />
               </div>
             </div>
             <div>
