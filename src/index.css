@@ -59,6 +59,8 @@
     color: #1e3a1a;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -143,5 +145,53 @@
   }
   .animate-shimmer {
     animation: shimmer 1.5s infinite linear;
+  }
+
+  /* Мобильные оптимизации */
+  @media (max-width: 768px) {
+    .glass-card {
+      border-radius: 1rem;
+      padding: 0.75rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .card-subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Улучшенная читаемость текста */
+  .text-readable {
+    color: #222;
+    font-weight: 500;
+    text-shadow: none;
+    -webkit-text-stroke: 0;
+  }
+
+  /* Нейтрально-медицинский дизайн */
+  .medical-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(209, 213, 219, 0.5);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .medical-text {
+    color: #222;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .medical-accent {
+    color: #38B000;
+    font-weight: 700;
   }
 }

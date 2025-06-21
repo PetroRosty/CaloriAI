@@ -50,51 +50,80 @@ const DatabaseStatus = () => {
 
   if (error) {
     return (
-      <div className="glass-card p-4 mb-6 border-red-500/30 bg-red-500/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <WifiOff className="w-5 h-5 text-red-400" />
-            <div>
-              <h4 className="text-red-400 font-medium">Проблема с подключением к базе данных</h4>
-              <p className="text-gray-300 text-sm">
-                Не удается загрузить данные из Supabase. Проверьте настройки подключения.
-              </p>
+      <>
+        {/* Десктопная версия */}
+        <div className="hidden md:block glass-card p-4 mb-6 border-red-500/30 bg-red-500/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <WifiOff className="w-5 h-5 text-red-400" />
+              <div>
+                <h4 className="text-red-400 font-medium">Проблема с подключением к базе данных</h4>
+                <p className="text-gray-300 text-sm">
+                  Не удается загрузить данные из Supabase. Проверьте настройки подключения.
+                </p>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestConnection}
+              disabled={isTesting}
+              className="border-red-400/30 text-red-400 hover:bg-red-400/10"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isTesting ? 'animate-spin' : ''}`} />
+              Проверить подключение
+            </Button>
+          </div>
+        </div>
+        
+        {/* Мобильная версия - unobtrusive сообщение внизу */}
+        <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
+          <div className="bg-red-500/90 backdrop-blur-sm border border-red-400/30 rounded-lg p-3 shadow-lg">
+            <div className="flex items-center space-x-2">
+              <RefreshCw className="w-4 h-4 text-white" />
+              <span className="text-white text-sm font-medium">Ошибка подключения к базе данных</span>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {/* Десктопная версия */}
+      <div className="hidden md:block glass-card p-3 mb-6 border-green-500/30 bg-green-500/10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Wifi className="w-4 h-4 text-green-400" />
+            <span className="text-green-400 text-sm font-medium">Подключено к базе данных</span>
           </div>
           <Button
             variant="outline"
             size="sm"
             onClick={handleTestConnection}
             disabled={isTesting}
-            className="border-red-400/30 text-red-400 hover:bg-red-400/10"
+            className="border-green-400/30 text-green-400 hover:bg-green-400/10"
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${isTesting ? 'animate-spin' : ''}`} />
             Проверить подключение
           </Button>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div className="glass-card p-3 mb-6 border-green-500/30 bg-green-500/10">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Wifi className="w-4 h-4 text-green-400" />
-          <span className="text-green-400 text-sm font-medium">Подключено к базе данных</span>
-        </div>
+      
+      {/* Мобильная версия - компактная иконка обновления */}
+      <div className="md:hidden fixed top-4 right-4 z-50">
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={handleTestConnection}
           disabled={isTesting}
-          className="border-green-400/30 text-green-400 hover:bg-green-400/10"
+          className="w-10 h-10 p-0 bg-white/80 backdrop-blur-sm border border-green-400/30 rounded-full shadow-lg hover:bg-white/90"
         >
-          <RefreshCw className={`w-4 h-4 mr-2 ${isTesting ? 'animate-spin' : ''}`} />
-          Проверить подключение
+          <RefreshCw className={`w-4 h-4 text-green-600 ${isTesting ? 'animate-spin' : ''}`} />
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

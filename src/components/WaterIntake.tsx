@@ -17,7 +17,7 @@ const WaterIntake = () => {
   if (error) {
     return (
       <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-4">Потребление воды</h3>
+        <h3 className="text-lg font-bold text-[#222] mb-4">Потребление воды</h3>
         <div className="text-center text-gray-400 py-4">
           <Droplets className="w-8 h-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Ошибка загрузки данных о воде</p>
@@ -33,19 +33,19 @@ const WaterIntake = () => {
 
   return (
     <div className="glass-card p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-white mb-4">Потребление воды</h3>
+      <h3 className="text-lg font-bold text-[#222] mb-4">Потребление воды</h3>
       <div className="flex items-center space-x-4">
         <div className="text-4xl">💧</div>
         <div className="flex-1">
           <div className="flex items-end space-x-2 mb-2">
-            <span className="text-2xl font-bold text-fitness-blue">
+            <span className="text-2xl font-bold text-[#38B000]">
               {current > 0 ? current.toFixed(1) : '0.0'}
             </span>
-            <span className="text-sm text-gray-400">/ {target} л</span>
+            <span className="text-sm text-gray-500">/ {target} л</span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-3">
+          <div className="w-full bg-gray-100 rounded-full h-3">
             <div 
-              className="h-3 rounded-full bg-gradient-to-r from-fitness-blue to-fitness-green transition-all duration-500"
+              className="h-3 rounded-full bg-[#38B000] transition-all duration-500"
               style={{ width: `${Math.min(percentage, 100)}%` }}
             ></div>
           </div>
@@ -57,7 +57,7 @@ const WaterIntake = () => {
             )}
           </div>
           {percentage >= 100 && (
-            <div className="text-xs text-fitness-green mt-1">
+            <div className="text-xs text-[#38B000] mt-1 font-medium">
               🎉 Дневная норма выполнена!
             </div>
           )}

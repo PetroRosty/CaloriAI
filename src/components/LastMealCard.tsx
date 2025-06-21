@@ -17,7 +17,7 @@ const LastMealCard = () => {
   if (error) {
     return (
       <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-4">Последний приём пищи</h3>
+        <h3 className="text-lg font-bold text-[#222] mb-4">Последний приём пищи</h3>
         <div className="text-center text-gray-400 py-4">
           <p className="text-sm">Ошибка загрузки данных</p>
         </div>
@@ -30,7 +30,7 @@ const LastMealCard = () => {
   if (meals.length === 0) {
     return (
       <div className="glass-card p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-white mb-4">Последний приём пищи</h3>
+        <h3 className="text-lg font-bold text-[#222] mb-4">Последний приём пищи</h3>
         <div className="text-center py-4">
           <div className="text-4xl mb-3">🍽️</div>
           <p className="text-gray-300 text-sm mb-1">Пока нет записей о питании</p>
@@ -90,7 +90,7 @@ const LastMealCard = () => {
 
   return (
     <div className="glass-card p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-white mb-4">Последний приём пищи</h3>
+      <h3 className="text-lg font-bold text-[#222] mb-4">Последний приём пищи</h3>
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-gradient-to-br from-fitness-green to-fitness-blue rounded-lg flex items-center justify-center text-xl">
