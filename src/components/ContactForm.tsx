@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { MessageSquare, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { sendFeedback } from '@/services/feedbackService';
 
 const messageTypes = [
   { value: 'bug', label: 'Сообщить о баге' },
@@ -41,20 +42,24 @@ const ContactForm = ({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: 
     setIsSubmitting(true);
 
     try {
-      // TODO: Implement actual form submission
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+      const result = await sendFeedback(formData);
       
-      toast({
-        title: "Сообщение отправлено",
-        description: "Спасибо за обратную связь! Мы ответим вам в ближайшее время.",
-      });
-      
-      onOpenChange(false);
-      setFormData({ type: '', name: '', email: '', message: '' });
-    } catch (error) {
+      if (result.success) {
+        toast({
+          title: "Сообщение отправлено",
+          description: "Спасибо за обратную связь! Мы ответим вам в ближайшее время.",
+        });
+        
+        onOpenChange(false);
+        setFormData({ type: '', name: '', email: '', message: '' });
+      } else {
+        throw new Error(result.error || 'Неизвестная ошибка');
+      }
+    } catch (error: any) {
+      console.error('Feedback submission error:', error);
       toast({
         title: "Ошибка",
-        description: "Не удалось отправить сообщение. Пожалуйста, попробуйте позже.",
+        description: error.message || "Не удалось отправить сообщение. Пожалуйста, попробуйте позже.",
         variant: "destructive",
       });
     } finally {
