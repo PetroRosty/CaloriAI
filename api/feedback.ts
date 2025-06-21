@@ -27,8 +27,8 @@ export default async function handler(req: any, res: any) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'Calori.AI@yandex.com',
+      from: 'calori.ai@yandex.com',
+      to: 'calori.ai@yandex.com',
       subject: `Новое сообщение с сайта Calori.AI - ${type || 'Обратная связь'}`,
       html: `
         <h2>Новое сообщение с сайта Calori.AI</h2>
