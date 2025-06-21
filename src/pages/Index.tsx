@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
-import { useUserProfile } from '@/hooks/useSupabaseData';
+import { useUserProfile, isSupabaseConfigured } from '@/hooks/useSupabaseData';
 import CalorieChart from '@/components/CalorieChart';
 import MacroCards from '@/components/MacroCards';
 import LastMealCard from '@/components/LastMealCard';
@@ -12,11 +12,27 @@ import ActionCards from '@/components/ActionCards';
 import ProAnalytics from '@/components/ProAnalytics';
 import ProReports from '@/components/ProReports';
 import DatabaseStatus from '@/components/DatabaseStatus';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { testSupabaseConnection } from '@/lib/supabase';
 
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
+  const [isTesting, setIsTesting] = useState(false);
+  
+  const handleTestConnection = async () => {
+    setIsTesting(true);
+    try {
+      const result = await testSupabaseConnection();
+      console.log('Connection test result:', result);
+    } catch (error) {
+      console.error('Connection test error:', error);
+    } finally {
+      setIsTesting(false);
+    }
+  };
   
   // Показываем состояние загрузки
   if (authLoading) {
@@ -64,8 +80,26 @@ const Index = () => {
           <DatabaseStatus />
         </div>
         <div className="glass-card mb-6 sm:mb-10 fade-in w-full max-w-full p-2 sm:p-6">
-          <h1 className="text-2xl sm:text-3xl font-bold card-title mb-2 text-[#222]">Добро пожаловать, {profileLoading ? 'Загрузка...' : getUserName()}!</h1>
-          <p className="card-subtitle text-[#4b5563]">Отслеживайте свой прогресс и достигайте целей</p>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold card-title mb-2 text-[#222]">Добро пожаловать, {profileLoading ? 'Загрузка...' : getUserName()}!</h1>
+              <p className="card-subtitle text-[#4b5563]">Отслеживайте свой прогресс и достигайте целей</p>
+            </div>
+            {/* Кнопка обновления БД для мобильных устройств */}
+            {isSupabaseConfigured() && (
+              <div className="md:hidden ml-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleTestConnection}
+                  disabled={isTesting}
+                  className="w-10 h-10 p-0 bg-white/80 backdrop-blur-sm border border-green-400/30 rounded-full shadow-lg hover:bg-white/90"
+                >
+                  <RefreshCw className={`w-4 h-4 text-green-600 ${isTesting ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-8">
           {/* Левая колонка */}

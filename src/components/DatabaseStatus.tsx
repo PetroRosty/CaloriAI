@@ -111,18 +111,7 @@ const DatabaseStatus = () => {
         </div>
       </div>
       
-      {/* Мобильная версия - компактная иконка обновления */}
-      <div className="md:hidden fixed top-4 right-4 z-50">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleTestConnection}
-          disabled={isTesting}
-          className="w-10 h-10 p-0 bg-white/80 backdrop-blur-sm border border-green-400/30 rounded-full shadow-lg hover:bg-white/90"
-        >
-          <RefreshCw className={`w-4 h-4 text-green-600 ${isTesting ? 'animate-spin' : ''}`} />
-        </Button>
-      </div>
+      {/* Мобильная версия - скрыта, кнопка будет в блоке приветствия */}
     </>
   );
 };
