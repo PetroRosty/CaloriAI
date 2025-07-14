@@ -46,7 +46,7 @@ const HeroProgress = () => {
   const totals = calculateTodayTotals(meals);
   const consumed = totals.calories;
   const remaining = Math.max(0, dailyGoal - consumed);
-  const percentage = Math.min(100, Math.round((consumed / dailyGoal) * 100));
+  const percentage = Math.min(100, (consumed / dailyGoal) * 100);
   const radius = 90;
   const stroke = 14;
   const normalizedRadius = radius - stroke / 2;
@@ -78,41 +78,36 @@ const HeroProgress = () => {
           />
           <text
             x="50%"
-            y="46%"
+            y="48%"
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize="2.8rem"
+            fontSize="2.7rem"
             fontWeight="bold"
             fill="#222"
           >
-            {consumed}
+            {consumed.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}
           </text>
           <text
             x="50%"
-            y="56%"
+            y="60%"
             textAnchor="middle"
-            fontSize="1.1rem"
-            fill="#38B000"
-            fontWeight="bold"
-          >
-            из {dailyGoal} ккал
-          </text>
-          <text
-            x="50%"
-            y="68%"
-            textAnchor="middle"
-            fontSize="0.95rem"
+            fontSize="1.05rem"
             fill="#9ca3af"
           >
-            Осталось: {remaining} ккал
+            ккал съедено
           </text>
         </svg>
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 text-xs text-gray-400 font-medium text-center w-full">
-          Цель можно изменить через Telegram-бота
+        {/* % сбоку справа от кольца на мобильном */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center">
+          <span className="text-[#38B000] text-lg font-bold leading-none">{Math.round(percentage)}%</span>
+          <span className="text-xs text-gray-400">от цели</span>
         </div>
       </div>
-      <div className="mt-4 text-base font-medium text-[#38B000] text-center px-2 opacity-80">
-        На пути к цели
+      <div className="mt-4 text-base font-medium text-[#222] text-center px-2">
+        Осталось: <span className="text-[#38B000] font-bold">{remaining.toLocaleString('ru-RU', { maximumFractionDigits: 1 })} ккал</span>
+      </div>
+      <div className="text-base text-gray-500 text-center px-2 mt-1">
+        Цель: <span className="font-semibold">{dailyGoal.toLocaleString('ru-RU', { maximumFractionDigits: 1 })} ккал</span> <span className="text-xs">(меняется через Telegram)</span>
       </div>
     </div>
   );
@@ -765,3 +760,4 @@ const Index = () => {
 };
 
 export default Index;
+
