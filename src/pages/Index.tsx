@@ -12,7 +12,7 @@ import ActionCards from '@/components/ActionCards';
 import ProAnalytics from '@/components/ProAnalytics';
 import ProReports from '@/components/ProReports';
 import DatabaseStatus from '@/components/DatabaseStatus';
-import { MessageSquare, RefreshCw } from 'lucide-react';
+import { MessageSquare, RefreshCw, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { testSupabaseConnection } from '@/lib/supabase';
@@ -24,6 +24,8 @@ import { Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import React from 'react';
+import html2canvas from 'html2canvas';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -358,6 +360,85 @@ const MobileBottomBar = () => {
   );
 };
 
+const MobileShareButton = () => {
+  const isMobile = useIsMobile();
+  const { data: todayMeals } = useTodayMeals();
+  const { data: profile } = useUserProfile();
+  const userProfile = profile?.[0];
+  const meals = todayMeals || [];
+  const totals = calculateTodayTotals(meals);
+  const proteinGoal = userProfile?.daily_protein_goal || 150;
+  const fatGoal = userProfile?.daily_fat_goal || 80;
+  const carbsGoal = userProfile?.daily_carbs_goal || 220;
+  const dailyGoal = userProfile?.daily_calories_goal || 2200;
+  const percent = Math.min(100, Math.round((totals.calories / dailyGoal) * 100));
+  const ref = React.useRef(null);
+
+  if (!isMobile) return null;
+
+  const handleShare = async () => {
+    if (!ref.current) return;
+    const canvas = await html2canvas(ref.current, { backgroundColor: '#f0fdf4', scale: 2 });
+    const dataUrl = canvas.toDataURL('image/png');
+    if (navigator.share) {
+      const blob = await (await fetch(dataUrl)).blob();
+      try {
+        await navigator.share({
+          files: [new File([blob], 'result.png', { type: 'image/png' })],
+          title: 'Мой результат дня',
+          text: 'Мой прогресс в Diet Dashboard!'
+        });
+      } catch (e) {
+        // пользователь отменил
+      }
+    } else {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'result.png';
+      link.click();
+    }
+  };
+
+  return (
+    <>
+      <div className="flex justify-center w-full mb-2 mt-2 md:hidden">
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#38B000] text-white font-bold text-base shadow hover:bg-[#2c8c00] transition"
+        >
+          <Share2 className="w-5 h-5" />
+          Поделиться результатом дня
+        </button>
+      </div>
+      <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div ref={ref} className="w-[320px] rounded-2xl bg-[#f0fdf4] p-6 flex flex-col items-center border border-[#38B000]/20 shadow-xl">
+          <div className="text-2xl font-bold mb-2 text-[#38B000]">Мой день в Diet Dashboard</div>
+          <div className="text-lg mb-2 text-[#222]">{percent}% от цели по калориям</div>
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex justify-between w-full text-base">
+              <span className="font-semibold text-[#38B000]">Белки</span>
+              <span>{Math.round(totals.protein)}/{proteinGoal} г</span>
+            </div>
+            <div className="flex justify-between w-full text-base">
+              <span className="font-semibold text-[#D7263D]">Жиры</span>
+              <span>{Math.round(totals.fat)}/{fatGoal} г</span>
+            </div>
+            <div className="flex justify-between w-full text-base">
+              <span className="font-semibold text-[#3B82F6]">Углеводы</span>
+              <span>{Math.round(totals.carbs)}/{carbsGoal} г</span>
+            </div>
+            <div className="flex justify-between w-full text-base mt-2">
+              <span className="font-semibold text-[#222]">Калории</span>
+              <span>{Math.round(totals.calories)}/{dailyGoal} ккал</span>
+            </div>
+          </div>
+          <div className="mt-4 text-sm text-[#4b5563]">diet-dashboard.ru</div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
@@ -421,6 +502,7 @@ const Index = () => {
         <MobileMealsCarousel />
         <MobileMacros />
         <MobileWeeklyChart />
+        <MobileShareButton />
         <div className="mb-6 sm:mb-8">
           <DatabaseStatus />
         </div>
