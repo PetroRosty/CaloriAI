@@ -19,9 +19,10 @@ import { testSupabaseConnection } from '@/lib/supabase';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTodayMeals, useUserProfile, calculateTodayTotals } from '@/hooks/useSupabaseData';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { useUserMeals } from '@/hooks/useSupabaseData';
+import { useUserMeals, getWeeklyCalorieData } from '@/hooks/useSupabaseData';
 import { Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -228,6 +229,91 @@ const MobileMacros = () => {
   );
 };
 
+const MobileWeeklyChart = () => {
+  const isMobile = useIsMobile();
+  const { data: weekMeals, isLoading, error } = useUserMeals(7);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  if (!isMobile) return null;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-6">
+        <div className="w-full h-40 animate-pulse rounded-2xl bg-gray-200" />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="text-center text-gray-400 py-6">Ошибка загрузки графика</div>
+    );
+  }
+  const meals = weekMeals || [];
+  const data = getWeeklyCalorieData(meals);
+  if (meals.length === 0) {
+    return (
+      <div className="text-center text-gray-400 py-6">Недостаточно данных для графика</div>
+    );
+  }
+  // Примеры советов (можно расширить или сделать динамическими)
+  const tips = [
+    'Отличный день! Продолжай в том же духе.',
+    'Попробуй добавить больше овощей.',
+    'Хороший баланс калорий!',
+    'Не забывай про воду 💧',
+    'Молодец! Почти достиг цели.',
+    'Старайся не пропускать приёмы пищи.',
+    'Великолепно! Ты на верном пути.'
+  ];
+  return (
+    <div className="w-full py-4">
+      <div className="text-lg font-bold text-[#222] mb-2 text-center">Потребление калорий за неделю</div>
+      <div className="relative w-full h-56 bg-white rounded-2xl shadow-md flex items-center justify-center">
+        <ResponsiveContainer width="98%" height="90%">
+          <LineChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+            <XAxis dataKey="day" stroke="#6b7280" tick={{ fill: '#6b7280', fontSize: 12 }} />
+            <YAxis stroke="#6b7280" tick={{ fill: '#6b7280', fontSize: 12 }} tickFormatter={v => `${v}`} />
+            <Tooltip
+              content={({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                  const idx = data.findIndex(d => d.day === label);
+                  return (
+                    <div className="bg-white rounded-xl shadow-lg p-3 border border-[#38B000]/30 text-[#222] text-sm max-w-[180px]">
+                      <div className="font-semibold mb-1">{label}</div>
+                      <div>Калории: <span className="font-bold text-[#38B000]">{payload[0].value}</span></div>
+                      <div className="mt-2 text-gray-500">{tips[idx % tips.length]}</div>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+              cursor={{ stroke: '#38B000', strokeWidth: 2, opacity: 0.2 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="calories"
+              stroke="#38B000"
+              strokeWidth={3}
+              dot={{
+                fill: '#38B000',
+                strokeWidth: 2,
+                r: 7,
+                onClick: (e, idx) => {
+                  setActiveIndex(idx);
+                  setShowTooltip(true);
+                },
+                style: { cursor: 'pointer' }
+              }}
+              activeDot={{ r: 11, fill: '#38B000', stroke: '#fff', strokeWidth: 2 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
@@ -290,6 +376,7 @@ const Index = () => {
         <HeroProgress />
         <MobileMealsCarousel />
         <MobileMacros />
+        <MobileWeeklyChart />
         <div className="mb-6 sm:mb-8">
           <DatabaseStatus />
         </div>
