@@ -26,6 +26,7 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import React, { useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
+import useEmblaCarousel from 'embla-carousel-react';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -150,6 +151,16 @@ const HeroProgress = () => {
 const MobileMealsCarousel = () => {
   const isMobile = useIsMobile();
   const { data: meals, isLoading } = useUserMeals(3);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    onSelect();
+    return () => emblaApi.off('select', onSelect);
+  }, [emblaApi]);
 
   if (!isMobile) return null;
   if (isLoading) {
@@ -160,6 +171,7 @@ const MobileMealsCarousel = () => {
     );
   }
   const mealsData = meals || [];
+  const slides = mealsData.slice(0, 10);
   if (mealsData.length === 0) {
     return (
       <div className="text-center text-gray-300 py-4 text-sm">Нет приёмов пищи</div>
@@ -179,9 +191,9 @@ const MobileMealsCarousel = () => {
   };
   return (
     <div className="w-full px-1 pb-2">
-      <Carousel opts={{ align: 'start' }} className="w-full max-w-full">
+      <Carousel opts={{ align: 'start' }} className="w-full max-w-full" ref={emblaRef}>
         <CarouselContent className="-ml-2">
-          {mealsData.slice(0, 10).map((meal, idx) => (
+          {slides.map((meal, idx) => (
             <CarouselItem key={meal.id || idx} className="pl-2 max-w-[220px] min-w-[180px]">
               <div className="bg-white rounded-2xl border border-[#E5E5E5] shadow-sm p-4 flex flex-col items-center min-h-[160px]">
                 <div className="w-12 h-12 mb-2 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-xl flex items-center justify-center text-2xl">
@@ -203,6 +215,17 @@ const MobileMealsCarousel = () => {
           ))}
         </CarouselContent>
       </Carousel>
+      {slides.length > 1 && (
+        <div className="flex justify-center mt-2">
+          {slides.map((_, idx) => (
+            <span
+              key={idx}
+              className={`transition-all duration-300 rounded-full mx-0.5 ${selectedIndex === idx ? 'bg-[#30d158] scale-110 shadow' : 'bg-gray-300'} `}
+              style={{ width: 8, height: 8, margin: '0 2px', display: 'inline-block', opacity: selectedIndex === idx ? 1 : 0.6 }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
