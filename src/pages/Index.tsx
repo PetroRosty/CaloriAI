@@ -439,11 +439,84 @@ const MobileShareButton = () => {
   );
 };
 
+const MobileMainScreen = () => (
+  <>
+    <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
+      <HeroProgress />
+    </div>
+    <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+      <MobileMealsCarousel />
+    </div>
+    <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+      <MobileMacros />
+    </div>
+    <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+      <MobileWeeklyChart />
+    </div>
+    <div className="bg-white rounded-3xl shadow-md px-3 py-4 mb-6 flex justify-center">
+      <MobileShareButton />
+    </div>
+  </>
+);
+
+const MobileAnalyticsScreen = () => (
+  <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
+    <ProAnalytics />
+  </div>
+);
+
+const MobileHistoryScreen = () => (
+  <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
+    <MealHistory />
+  </div>
+);
+
+const MobileProfileScreen = () => {
+  const { data: profile, isLoading } = useUserProfile();
+  const userProfile = profile?.[0];
+  if (isLoading) return <div className="p-8 text-center text-gray-400">Загрузка...</div>;
+  if (!userProfile) return <div className="p-8 text-center text-gray-400">Нет данных профиля</div>;
+  return (
+    <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5 flex flex-col items-center">
+      <div className="w-20 h-20 rounded-full bg-[#F6FBF4] flex items-center justify-center text-4xl font-bold text-[#38B000] mb-4">
+        {userProfile.first_name?.[0] || 'U'}
+      </div>
+      <div className="text-xl font-bold text-[#222] mb-1">{userProfile.first_name} {userProfile.last_name}</div>
+      <div className="text-sm text-gray-400 mb-2">@{userProfile.username}</div>
+      <div className="text-base text-[#4b5563] mb-2">{userProfile.email}</div>
+      <div className="text-base text-[#4b5563]">{userProfile.language_code}</div>
+    </div>
+  );
+};
+
+const MOBILE_TABS = [
+  { key: 'main', icon: '🏠', label: 'Главная' },
+  { key: 'analytics', icon: '📊', label: 'Аналитика' },
+  { key: 'history', icon: '📅', label: 'История' },
+  { key: 'profile', icon: '👤', label: 'Профиль' },
+];
+
+const MobileBottomTabBar = ({ activeTab, setActiveTab }) => (
+  <div className="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-gray-200 flex justify-around items-center h-16 shadow-[0_-2px_16px_0_rgba(56,176,0,0.07)] md:hidden">
+    {MOBILE_TABS.map(tab => (
+      <button
+        key={tab.key}
+        className={`flex flex-col items-center flex-1 text-2xl focus:outline-none ${activeTab === tab.key ? 'text-[#38B000]' : 'text-[#222]'}`}
+        onClick={() => setActiveTab(tab.key)}
+      >
+        <span>{tab.icon}</span>
+        <span className="text-xs mt-1">{tab.label}</span>
+      </button>
+    ))}
+  </div>
+);
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
   const [isTesting, setIsTesting] = useState(false);
   const isMobile = useIsMobile();
+  const [activeTab, setActiveTab] = useState('main');
   
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -499,24 +572,13 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7] pb-20">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
-        {/* Только новый мобильный интерфейс */}
+        {/* Мобильные табы */}
         {isMobile && (
           <>
-            <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
-              <HeroProgress />
-            </div>
-            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
-              <MobileMealsCarousel />
-            </div>
-            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
-              <MobileMacros />
-            </div>
-            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
-              <MobileWeeklyChart />
-            </div>
-            <div className="bg-white rounded-3xl shadow-md px-3 py-4 mb-6 flex justify-center">
-              <MobileShareButton />
-            </div>
+            {activeTab === 'main' && <MobileMainScreen />}
+            {activeTab === 'analytics' && <MobileAnalyticsScreen />}
+            {activeTab === 'history' && <MobileHistoryScreen />}
+            {activeTab === 'profile' && <MobileProfileScreen />}
           </>
         )}
         {/* Desktop и остальной layout */}
@@ -600,7 +662,7 @@ const Index = () => {
           </>
         )}
       </main>
-      <MobileBottomBar />
+      {isMobile && <MobileBottomTabBar activeTab={activeTab} setActiveTab={setActiveTab} />}
     </div>
   );
 };
