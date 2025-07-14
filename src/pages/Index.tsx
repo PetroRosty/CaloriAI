@@ -16,6 +16,85 @@ import { MessageSquare, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { testSupabaseConnection } from '@/lib/supabase';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useTodayMeals, useUserProfile, calculateTodayTotals } from '@/hooks/useSupabaseData';
+
+const HeroProgress = () => {
+  const isMobile = useIsMobile();
+  const { data: todayMeals, isLoading: mealsLoading } = useTodayMeals();
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
+
+  if (!isMobile) return null;
+  if (mealsLoading || profileLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="w-40 h-40 animate-pulse rounded-full bg-gray-200" />
+      </div>
+    );
+  }
+  const meals = todayMeals || [];
+  const userProfile = profile?.[0];
+  const dailyGoal = userProfile?.daily_calories_goal || 2200;
+  const totals = calculateTodayTotals(meals);
+  const consumed = totals.calories;
+  const percentage = Math.min(100, Math.round((consumed / dailyGoal) * 100));
+  const radius = 90;
+  const stroke = 14;
+  const normalizedRadius = radius - stroke / 2;
+  const circumference = 2 * Math.PI * normalizedRadius;
+  const progress = (percentage / 100) * circumference;
+  return (
+    <div className="flex flex-col items-center justify-center py-8 w-full">
+      <div className="relative w-full flex justify-center">
+        <svg height={radius * 2} width={radius * 2} className="block" style={{ maxWidth: '90vw' }}>
+          <circle
+            stroke="#E5E7EB"
+            fill="transparent"
+            strokeWidth={stroke}
+            r={normalizedRadius}
+            cx={radius}
+            cy={radius}
+          />
+          <circle
+            stroke="#38B000"
+            fill="transparent"
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference - progress}
+            r={normalizedRadius}
+            cx={radius}
+            cy={radius}
+            style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(.4,2,.3,1)' }}
+          />
+          <text
+            x="50%"
+            y="50%"
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize="2.8rem"
+            fontWeight="bold"
+            fill="#222"
+          >
+            {percentage}%
+          </text>
+          <text
+            x="50%"
+            y="62%"
+            textAnchor="middle"
+            fontSize="1.1rem"
+            fill="#4b5563"
+          >
+            от цели
+          </text>
+        </svg>
+      </div>
+      <div className="mt-6 text-lg font-semibold text-[#38B000] text-center px-2">
+        Отлично! Ты на пути к своей цели 🚀
+      </div>
+    </div>
+  );
+};
 
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
@@ -76,6 +155,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7]">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
+        <HeroProgress />
         <div className="mb-6 sm:mb-8">
           <DatabaseStatus />
         </div>
