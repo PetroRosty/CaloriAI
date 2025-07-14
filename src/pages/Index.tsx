@@ -372,31 +372,39 @@ const MobileShareButton = () => {
   const carbsGoal = userProfile?.daily_carbs_goal || 220;
   const dailyGoal = userProfile?.daily_calories_goal || 2200;
   const percent = Math.min(100, Math.round((totals.calories / dailyGoal) * 100));
+  const avatarUrl = userProfile?.photo_url;
+  const initials = userProfile?.first_name?.[0] || 'U';
   const ref = React.useRef(null);
 
   if (!isMobile) return null;
 
   const handleShare = async () => {
     if (!ref.current) return;
-    const canvas = await html2canvas(ref.current, { backgroundColor: '#f0fdf4', scale: 2 });
+    const canvas = await html2canvas(ref.current, { backgroundColor: 'transparent', scale: 2 });
     const dataUrl = canvas.toDataURL('image/png');
     if (navigator.share) {
       const blob = await (await fetch(dataUrl)).blob();
       try {
         await navigator.share({
-          files: [new File([blob], 'result.png', { type: 'image/png' })],
+          files: [new File([blob], 'calorai-day.png', { type: 'image/png' })],
           title: 'Мой результат дня',
-          text: 'Мой прогресс в Diet Dashboard!'
+          text: 'Мой прогресс в CalorAI!'
         });
-      } catch (e) {
-        // пользователь отменил
-      }
+      } catch (e) {}
     } else {
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = 'result.png';
+      link.download = 'calorai-day.png';
       link.click();
     }
+  };
+
+  // Цвета для макроэлементов
+  const macroColors = {
+    protein: '#38B000',
+    fat: '#D7263D',
+    carbs: '#3B82F6',
+    calories: '#F59E42',
   };
 
   return (
@@ -404,35 +412,102 @@ const MobileShareButton = () => {
       <div className="flex justify-center w-full mb-2 mt-2 md:hidden">
         <button
           onClick={handleShare}
-          className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#38B000] text-white font-bold text-base shadow hover:bg-[#2c8c00] transition"
+          className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#38B000] to-[#3B82F6] text-white font-bold text-base shadow hover:bg-[#2c8c00] transition"
         >
           <Share2 className="w-5 h-5" />
-          Поделиться результатом
+          Поделиться
         </button>
       </div>
+      {/* Сторис-постер для share */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-        <div ref={ref} className="w-[320px] rounded-2xl bg-[#f0fdf4] p-6 flex flex-col items-center border border-[#38B000]/20 shadow-xl">
-          <div className="text-xl font-bold mb-2 text-[#38B000]">Мой день</div>
-          <div className="text-base mb-2 text-[#222]">{percent}% от цели</div>
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex justify-between w-full text-sm">
-              <span className="font-semibold text-[#38B000]">Белки</span>
-              <span>{Math.round(totals.protein)}/{proteinGoal} г</span>
+        <div
+          ref={ref}
+          className="w-[340px] h-[600px] rounded-[32px] flex flex-col items-center justify-between p-0 relative overflow-hidden shadow-2xl"
+          style={{
+            background: 'radial-gradient(ellipse at 60% 0%, #f0fdf4 60%, #38B000 100%)',
+            boxShadow: '0 8px 32px 0 rgba(56,176,0,0.18)',
+          }}
+        >
+          {/* Аватар */}
+          <div className="absolute left-5 top-5 flex items-center gap-2 z-10">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="avatar" className="w-12 h-12 rounded-full border-4 border-white shadow" />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-[#38B000] flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow">
+                {initials}
+              </div>
+            )}
+          </div>
+          {/* Логотип CalorAI.ru */}
+          <div className="absolute right-5 top-5 z-10 flex items-center gap-1">
+            <img src="/logo.svg" alt="logo" className="w-7 h-7" />
+            <span className="text-xs font-bold text-[#38B000] drop-shadow">CalorAI.ru</span>
+          </div>
+          {/* Контент */}
+          <div className="flex flex-col items-center w-full mt-12">
+            <div className="text-2xl font-extrabold text-white drop-shadow mb-2 tracking-wide" style={{textShadow:'0 2px 8px #38B00088'}}>Мой день в CalorAI</div>
+            {/* Кольцо прогресса */}
+            <div className="relative flex items-center justify-center my-4">
+              <svg width="170" height="170" viewBox="0 0 170 170">
+                <defs>
+                  <linearGradient id="circleGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#38B000" />
+                    <stop offset="100%" stopColor="#3B82F6" />
+                  </linearGradient>
+                </defs>
+                <circle
+                  cx="85" cy="85" r="75"
+                  stroke="#e5e7eb" strokeWidth="16" fill="none"
+                />
+                <circle
+                  cx="85" cy="85" r="75"
+                  stroke="url(#circleGradient)"
+                  strokeWidth="16"
+                  fill="none"
+                  strokeDasharray={2 * Math.PI * 75}
+                  strokeDashoffset={2 * Math.PI * 75 - (percent / 100) * 2 * Math.PI * 75}
+                  strokeLinecap="round"
+                  style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(.4,2,.3,1)' }}
+                />
+                <text
+                  x="50%" y="50%" textAnchor="middle" dominantBaseline="central"
+                  fontSize="3.2rem" fontWeight="bold" fill="#222"
+                >
+                  {percent}%
+                </text>
+              </svg>
             </div>
-            <div className="flex justify-between w-full text-sm">
-              <span className="font-semibold text-[#D7263D]">Жиры</span>
-              <span>{Math.round(totals.fat)}/{fatGoal} г</span>
-            </div>
-            <div className="flex justify-between w-full text-sm">
-              <span className="font-semibold text-[#3B82F6]">Углеводы</span>
-              <span>{Math.round(totals.carbs)}/{carbsGoal} г</span>
-            </div>
-            <div className="flex justify-between w-full text-sm mt-2">
-              <span className="font-semibold text-[#222]">Калории</span>
-              <span>{Math.round(totals.calories)}/{dailyGoal} ккал</span>
+            <div className="text-lg font-bold text-[#38B000] mb-2">{percent}% от цели по калориям</div>
+            {/* Таблица макроэлементов */}
+            <div className="w-full flex flex-col items-center mt-2 mb-2">
+              <div className="grid grid-cols-4 gap-2 w-full px-4">
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-gray-500 mb-1">Белки</span>
+                  <span className="text-xl font-extrabold" style={{ color: macroColors.protein }}>{Math.round(totals.protein)}</span>
+                  <span className="text-xs text-gray-400">/ {proteinGoal} г</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-gray-500 mb-1">Жиры</span>
+                  <span className="text-xl font-extrabold" style={{ color: macroColors.fat }}>{Math.round(totals.fat)}</span>
+                  <span className="text-xs text-gray-400">/ {fatGoal} г</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-gray-500 mb-1">Углеводы</span>
+                  <span className="text-xl font-extrabold" style={{ color: macroColors.carbs }}>{Math.round(totals.carbs)}</span>
+                  <span className="text-xs text-gray-400">/ {carbsGoal} г</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-gray-500 mb-1">Калории</span>
+                  <span className="text-xl font-extrabold" style={{ color: macroColors.calories }}>{Math.round(totals.calories)}</span>
+                  <span className="text-xs text-gray-400">/ {dailyGoal} ккал</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="mt-4 text-xs text-[#b6c2b7]">diet-dashboard.ru</div>
+          {/* Мотивация */}
+          <div className="w-full flex flex-col items-center mb-8">
+            <div className="text-lg font-bold text-[#3B82F6] mt-2 mb-1 drop-shadow">Двигаюсь к цели! 🏆</div>
+          </div>
         </div>
       </div>
     </>
