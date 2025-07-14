@@ -23,6 +23,7 @@ import { useUserMeals, getWeeklyCalorieData } from '@/hooks/useSupabaseData';
 import { Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -314,6 +315,49 @@ const MobileWeeklyChart = () => {
   );
 };
 
+const MobileBottomBar = () => {
+  const isMobile = useIsMobile();
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  if (!isMobile) return null;
+  return (
+    <div className="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-gray-200 flex justify-around items-center h-16 shadow-[0_-2px_16px_0_rgba(56,176,0,0.07)] md:hidden">
+      <button className="flex flex-col items-center flex-1 text-2xl focus:outline-none">
+        <span>🏠</span>
+        <span className="text-xs mt-1">Домой</span>
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button className="flex flex-col items-center flex-1 text-2xl focus:outline-none" onClick={() => setOpen(true)}>
+            <span>✈️</span>
+            <span className="text-xs mt-1">Telegram</span>
+          </button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Добавление приёмов пищи</DialogTitle>
+            <DialogDescription>
+              Добавление приёмов пищи доступно только через Telegram-бота.
+            </DialogDescription>
+          </DialogHeader>
+          <a
+            href="https://t.me/MyCalorAIBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 w-full inline-flex justify-center items-center px-6 py-3 rounded-lg bg-[#38B000] text-white font-bold text-base shadow hover:bg-[#2c8c00] transition"
+          >
+            Открыть бота
+          </a>
+        </DialogContent>
+      </Dialog>
+      <button className="flex flex-col items-center flex-1 text-2xl focus:outline-none">
+        <span>👤</span>
+        <span className="text-xs mt-1">Профиль</span>
+      </button>
+    </div>
+  );
+};
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
@@ -370,7 +414,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7]">
+    <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7] pb-20">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
         <HeroProgress />
@@ -453,6 +497,7 @@ const Index = () => {
           </div>
         </div>
       </main>
+      <MobileBottomBar />
     </div>
   );
 };
