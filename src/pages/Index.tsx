@@ -90,15 +90,15 @@ const HeroProgress = () => {
             x="50%"
             y="62%"
             textAnchor="middle"
-            fontSize="1.1rem"
-            fill="#4b5563"
+            fontSize="0.95rem"
+            fill="#9ca3af"
           >
-            от цели
+            цель
           </text>
         </svg>
       </div>
-      <div className="mt-6 text-lg font-semibold text-[#38B000] text-center px-2">
-        Отлично! Ты на пути к своей цели 🚀
+      <div className="mt-4 text-base font-medium text-[#38B000] text-center px-2 opacity-80">
+        На пути к цели
       </div>
     </div>
   );
@@ -119,7 +119,7 @@ const MobileMealsCarousel = () => {
   const mealsData = meals || [];
   if (mealsData.length === 0) {
     return (
-      <div className="text-center text-gray-400 py-4 text-base">Нет недавних приёмов пищи</div>
+      <div className="text-center text-gray-300 py-4 text-sm">Нет приёмов пищи</div>
     );
   }
   const getMealTypeIcon = (type) => {
@@ -145,11 +145,11 @@ const MobileMealsCarousel = () => {
                   {getMealTypeIcon(meal.meal_type)}
                 </div>
                 <div className="font-semibold text-[#222] text-base truncate w-full text-center mb-1">{meal.dish}</div>
-                <div className="flex items-center text-xs text-gray-500 mb-1">
+                <div className="flex items-center text-xs text-gray-400 mb-1">
                   <Clock className="w-3 h-3 text-[#3B82F6] mr-1" />
                   {formatTime(meal.eaten_at)}
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center text-xs text-gray-600 mt-1">
+                <div className="flex flex-wrap gap-2 justify-center text-xs text-gray-400 mt-1">
                   <span className="text-[#38B000] font-medium">{meal.kcal} ккал</span>
                   <span>Б: {Math.round(meal.prot || 0)}г</span>
                   <span>Ж: {Math.round(meal.fat || 0)}г</span>
@@ -218,12 +218,12 @@ const MobileMacros = () => {
         return (
           <div key={macro.name} className={`rounded-2xl px-6 py-5 flex flex-col items-center ${macro.bg} shadow-md`}>
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-4xl font-extrabold" style={{ color: macro.color }}>{macro.value}</span>
-              <span className="text-base text-gray-500 font-medium">/ {macro.goal} г</span>
+              <span className="text-3xl font-bold" style={{ color: macro.color }}>{macro.value}</span>
+              <span className="text-sm text-gray-400 font-medium">/ {macro.goal} г</span>
             </div>
-            <div className="text-lg font-semibold mb-2" style={{ color: macro.color }}>{macro.name}</div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div className={`h-3 rounded-full transition-all duration-500 ${macro.bar}`} style={{ width: `${percent}%` }}></div>
+            <div className="text-base font-semibold mb-2" style={{ color: macro.color }}>{macro.name}</div>
+            <div className="w-full bg-gray-100 rounded-full h-2">
+              <div className={`h-2 rounded-full transition-all duration-500 ${macro.bar}`} style={{ width: `${percent}%` }}></div>
             </div>
           </div>
         );
@@ -269,9 +269,9 @@ const MobileWeeklyChart = () => {
     'Великолепно! Ты на верном пути.'
   ];
   return (
-    <div className="w-full py-4">
-      <div className="text-lg font-bold text-[#222] mb-2 text-center">Потребление калорий за неделю</div>
-      <div className="relative w-full h-56 bg-white rounded-2xl shadow-md flex items-center justify-center">
+    <div className="w-full py-2">
+      <div className="text-base font-bold text-[#222] mb-2 text-center opacity-80">Калории за неделю</div>
+      <div className="relative w-full h-48 bg-white rounded-2xl shadow-md flex items-center justify-center">
         <ResponsiveContainer width="98%" height="90%">
           <LineChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -407,32 +407,32 @@ const MobileShareButton = () => {
           className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#38B000] text-white font-bold text-base shadow hover:bg-[#2c8c00] transition"
         >
           <Share2 className="w-5 h-5" />
-          Поделиться результатом дня
+          Поделиться результатом
         </button>
       </div>
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
         <div ref={ref} className="w-[320px] rounded-2xl bg-[#f0fdf4] p-6 flex flex-col items-center border border-[#38B000]/20 shadow-xl">
-          <div className="text-2xl font-bold mb-2 text-[#38B000]">Мой день в Diet Dashboard</div>
-          <div className="text-lg mb-2 text-[#222]">{percent}% от цели по калориям</div>
+          <div className="text-xl font-bold mb-2 text-[#38B000]">Мой день</div>
+          <div className="text-base mb-2 text-[#222]">{percent}% от цели</div>
           <div className="flex flex-col gap-2 w-full">
-            <div className="flex justify-between w-full text-base">
+            <div className="flex justify-between w-full text-sm">
               <span className="font-semibold text-[#38B000]">Белки</span>
               <span>{Math.round(totals.protein)}/{proteinGoal} г</span>
             </div>
-            <div className="flex justify-between w-full text-base">
+            <div className="flex justify-between w-full text-sm">
               <span className="font-semibold text-[#D7263D]">Жиры</span>
               <span>{Math.round(totals.fat)}/{fatGoal} г</span>
             </div>
-            <div className="flex justify-between w-full text-base">
+            <div className="flex justify-between w-full text-sm">
               <span className="font-semibold text-[#3B82F6]">Углеводы</span>
               <span>{Math.round(totals.carbs)}/{carbsGoal} г</span>
             </div>
-            <div className="flex justify-between w-full text-base mt-2">
+            <div className="flex justify-between w-full text-sm mt-2">
               <span className="font-semibold text-[#222]">Калории</span>
               <span>{Math.round(totals.calories)}/{dailyGoal} ккал</span>
             </div>
           </div>
-          <div className="mt-4 text-sm text-[#4b5563]">diet-dashboard.ru</div>
+          <div className="mt-4 text-xs text-[#b6c2b7]">diet-dashboard.ru</div>
         </div>
       </div>
     </>
@@ -443,6 +443,7 @@ const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
   const [isTesting, setIsTesting] = useState(false);
+  const isMobile = useIsMobile();
   
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -498,86 +499,106 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7] pb-20">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
-        <HeroProgress />
-        <MobileMealsCarousel />
-        <MobileMacros />
-        <MobileWeeklyChart />
-        <MobileShareButton />
-        <div className="mb-6 sm:mb-8">
-          <DatabaseStatus />
-        </div>
-        <div className="glass-card mb-6 sm:mb-10 fade-in w-full max-w-full p-2 sm:p-6">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold card-title mb-2 text-[#222]">Добро пожаловать, {profileLoading ? 'Загрузка...' : getUserName()}!</h1>
-              <p className="card-subtitle text-[#4b5563]">Отслеживайте свой прогресс и достигайте целей</p>
+        {/* Мобильные секции с увеличенными отступами и светлым фоном */}
+        {isMobile && (
+          <>
+            <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
+              <HeroProgress />
             </div>
-            {/* Кнопка обновления БД для мобильных устройств */}
-            {isSupabaseConfigured() && (
-              <div className="md:hidden ml-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleTestConnection}
-                  disabled={isTesting}
-                  className="w-10 h-10 p-0 bg-white/80 backdrop-blur-sm border border-green-400/30 rounded-full shadow-lg hover:bg-white/90"
-                >
-                  <RefreshCw className={`w-4 h-4 text-green-600 ${isTesting ? 'animate-spin' : ''}`} />
-                </Button>
+            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+              <MobileMealsCarousel />
+            </div>
+            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+              <MobileMacros />
+            </div>
+            <div className="bg-white rounded-3xl shadow-md px-3 py-5 mb-5">
+              <MobileWeeklyChart />
+            </div>
+            <div className="bg-white rounded-3xl shadow-md px-3 py-4 mb-6 flex justify-center">
+              <MobileShareButton />
+            </div>
+          </>
+        )}
+        {/* Desktop и остальной layout */}
+        {!isMobile && (
+          <>
+            <div className="mb-6 sm:mb-8">
+              <DatabaseStatus />
+            </div>
+            <div className="glass-card mb-6 sm:mb-10 fade-in w-full max-w-full p-2 sm:p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold card-title mb-2 text-[#222]">Добро пожаловать, {profileLoading ? 'Загрузка...' : getUserName()}!</h1>
+                  <p className="card-subtitle text-[#4b5563]">Отслеживайте свой прогресс и достигайте целей</p>
+                </div>
+                {/* Кнопка обновления БД для мобильных устройств */}
+                {isSupabaseConfigured() && (
+                  <div className="md:hidden ml-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleTestConnection}
+                      disabled={isTesting}
+                      className="w-10 h-10 p-0 bg-white/80 backdrop-blur-sm border border-green-400/30 rounded-full shadow-lg hover:bg-white/90"
+                    >
+                      <RefreshCw className={`w-4 h-4 text-green-600 ${isTesting ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-8">
-          {/* Левая колонка */}
-          <div className="lg:col-span-8 space-y-2 sm:space-y-8">
-            {/* Обзор дня */}
-            <section id="overview" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-semibold card-title mb-4 text-[#222]">Обзор дня</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                <CalorieChart />
-                <LastMealCard />
-                <WaterIntake />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-8">
+              {/* Левая колонка */}
+              <div className="lg:col-span-8 space-y-2 sm:space-y-8">
+                {/* Обзор дня */}
+                <section id="overview" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-semibold card-title mb-4 text-[#222]">Обзор дня</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <CalorieChart />
+                    <LastMealCard />
+                    <WaterIntake />
+                  </div>
+                  <div className="mt-4 sm:mt-6">
+                    <MacroCards />
+                  </div>
+                </section>
+                {/* График за неделю */}
+                <section id="weekly" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <WeeklyChart />
+                </section>
+                {/* PRO Аналитика */}
+                <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <ProAnalytics />
+                </section>
+                {/* AI рекомендации */}
+                <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <AIRecommendation />
+                </section>
+                {/* История приёмов пищи */}
+                <section id="history" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <MealHistory />
+                </section>
               </div>
-              <div className="mt-4 sm:mt-6">
-                <MacroCards />
+              {/* Правая колонка */}
+              <div className="lg:col-span-4 space-y-2 sm:space-y-8">
+                <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <ActionCards />
+                </section>
+                {/* PRO блоки */}
+                <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <div className="text-center py-6 sm:py-8">
+                    <div className="text-4xl mb-3">👨‍⚕️</div>
+                    <p className="text-base sm:text-lg font-semibold mb-2 text-[#1e3a1a]">Чат с нутрициологом</p>
+                    <p className="text-sm text-[#4b5563]">Скоро вы сможете общаться с профессиональным нутрициологом и получать персональные рекомендации!</p>
+                  </div>
+                </section>
+                <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
+                  <ProReports />
+                </section>
               </div>
-            </section>
-            {/* График за неделю */}
-            <section id="weekly" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <WeeklyChart />
-            </section>
-            {/* PRO Аналитика */}
-            <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <ProAnalytics />
-            </section>
-            {/* AI рекомендации */}
-            <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <AIRecommendation />
-            </section>
-            {/* История приёмов пищи */}
-            <section id="history" className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <MealHistory />
-            </section>
-          </div>
-          {/* Правая колонка */}
-          <div className="lg:col-span-4 space-y-2 sm:space-y-8">
-            <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <ActionCards />
-            </section>
-            {/* PRO блоки */}
-            <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <div className="text-center py-6 sm:py-8">
-                <div className="text-4xl mb-3">👨‍⚕️</div>
-                <p className="text-base sm:text-lg font-semibold mb-2 text-[#1e3a1a]">Чат с нутрициологом</p>
-                <p className="text-sm text-[#4b5563]">Скоро вы сможете общаться с профессиональным нутрициологом и получать персональные рекомендации!</p>
-              </div>
-            </section>
-            <section className="glass-card fade-in w-full max-w-full p-2 sm:p-6">
-              <ProReports />
-            </section>
-          </div>
-        </div>
+            </div>
+          </>
+        )}
       </main>
       <MobileBottomBar />
     </div>
