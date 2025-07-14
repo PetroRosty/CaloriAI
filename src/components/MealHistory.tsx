@@ -1,9 +1,11 @@
+import React, { useState } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { useUserMeals } from '@/hooks/useSupabaseData';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const MealHistory = () => {
   const { data: meals, isLoading, error } = useUserMeals(3); // Последние 3 дня
+  const [showAll, setShowAll] = useState(false);
 
   if (isLoading) {
     return (
@@ -97,8 +99,8 @@ const MealHistory = () => {
         </h3>
         <span className="text-sm text-[#38B000]">{mealsData.length} записей</span>
       </div>
-      <div className="space-y-4 max-h-96 overflow-y-auto">
-        {mealsData.slice(0, 10).map((meal, index) => (
+      <div className="space-y-4">
+        {mealsData.slice(0, 3).map((meal, index) => (
           <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-xl bg-[#F6FBF4] border border-[#E5E5E5] hover:bg-[#E0F2FE] transition-colors">
             <div className="flex-shrink-0">
               <div className="w-10 h-10 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-lg flex items-center justify-center text-white text-lg">
@@ -127,11 +129,57 @@ const MealHistory = () => {
           </div>
         ))}
       </div>
-      {mealsData.length > 10 && (
+      {mealsData.length > 3 && (
         <div className="text-center mt-4">
-          <button className="text-[#3B82F6] hover:text-[#38B000] text-sm font-medium transition-colors">
-            Показать ещё {mealsData.length - 10} записей
+          <button
+            className="text-[#3B82F6] hover:text-[#38B000] text-sm font-medium transition-colors"
+            onClick={() => setShowAll(true)}
+          >
+            Показать все {mealsData.length} записей
           </button>
+        </div>
+      )}
+      {showAll && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black bg-opacity-40" onClick={() => setShowAll(false)}>
+          <div
+            className="w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl p-4 max-h-[80vh] overflow-y-auto animate-fade-in"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-lg font-semibold text-[#222]">Вся история приёмов пищи</h4>
+              <button className="text-[#3B82F6] text-base" onClick={() => setShowAll(false)}>Закрыть</button>
+            </div>
+            <div className="space-y-3">
+              {mealsData.map((meal, index) => (
+                <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-xl bg-[#F6FBF4] border border-[#E5E5E5]">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-lg flex items-center justify-center text-white text-lg">
+                      {getMealTypeIcon(meal.meal_type)}
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <h4 className="text-[#222] font-medium truncate">{meal.dish}</h4>
+                      <span className="text-xs text-[#38B000] font-medium">{meal.kcal} ккал</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 mb-1">
+                      <Clock className="w-3 h-3 text-[#3B82F6]" />
+                      <span>{formatTime(meal.eaten_at)}</span>
+                      <span>•</span>
+                      <span>{getMealTypeName(meal.meal_type)}</span>
+                      <span>•</span>
+                      <span>{formatDate(meal.eaten_at)}</span>
+                    </div>
+                    {(meal.prot || meal.fat || meal.carb) && (
+                      <div className="text-xs text-gray-500">
+                        Б: {Math.round(meal.prot || 0)}г • Ж: {Math.round(meal.fat || 0)}г • У: {Math.round(meal.carb || 0)}г
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

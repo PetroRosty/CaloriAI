@@ -45,6 +45,7 @@ const HeroProgress = () => {
   const dailyGoal = userProfile?.daily_calories_goal || 2200;
   const totals = calculateTodayTotals(meals);
   const consumed = totals.calories;
+  const remaining = Math.max(0, dailyGoal - consumed);
   const percentage = Math.min(100, Math.round((consumed / dailyGoal) * 100));
   const radius = 90;
   const stroke = 14;
@@ -77,25 +78,38 @@ const HeroProgress = () => {
           />
           <text
             x="50%"
-            y="50%"
+            y="46%"
             textAnchor="middle"
             dominantBaseline="central"
             fontSize="2.8rem"
             fontWeight="bold"
             fill="#222"
           >
-            {percentage}%
+            {consumed}
           </text>
           <text
             x="50%"
-            y="62%"
+            y="56%"
+            textAnchor="middle"
+            fontSize="1.1rem"
+            fill="#38B000"
+            fontWeight="bold"
+          >
+            из {dailyGoal} ккал
+          </text>
+          <text
+            x="50%"
+            y="68%"
             textAnchor="middle"
             fontSize="0.95rem"
             fill="#9ca3af"
           >
-            цель
+            Осталось: {remaining} ккал
           </text>
         </svg>
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 text-xs text-gray-400 font-medium text-center w-full">
+          Цель можно изменить через Telegram-бота
+        </div>
       </div>
       <div className="mt-4 text-base font-medium text-[#38B000] text-center px-2 opacity-80">
         На пути к цели
