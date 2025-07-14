@@ -18,6 +18,9 @@ import { useState } from 'react';
 import { testSupabaseConnection } from '@/lib/supabase';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTodayMeals, useUserProfile, calculateTodayTotals } from '@/hooks/useSupabaseData';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { useUserMeals } from '@/hooks/useSupabaseData';
+import { Clock } from 'lucide-react';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -96,6 +99,66 @@ const HeroProgress = () => {
   );
 };
 
+const MobileMealsCarousel = () => {
+  const isMobile = useIsMobile();
+  const { data: meals, isLoading } = useUserMeals(3);
+
+  if (!isMobile) return null;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-4">
+        <div className="w-24 h-24 animate-pulse rounded-xl bg-gray-200" />
+      </div>
+    );
+  }
+  const mealsData = meals || [];
+  if (mealsData.length === 0) {
+    return (
+      <div className="text-center text-gray-400 py-4 text-base">Нет недавних приёмов пищи</div>
+    );
+  }
+  const getMealTypeIcon = (type) => {
+    switch (type) {
+      case 'breakfast': return '🌅';
+      case 'lunch': return '🌞';
+      case 'dinner': return '🌙';
+      case 'snack': return '🍎';
+      default: return '🍽️';
+    }
+  };
+  const formatTime = (dateStr) => {
+    return new Date(dateStr).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  };
+  return (
+    <div className="w-full px-1 pb-2">
+      <Carousel opts={{ align: 'start' }} className="w-full max-w-full">
+        <CarouselContent className="-ml-2">
+          {mealsData.slice(0, 10).map((meal, idx) => (
+            <CarouselItem key={meal.id || idx} className="pl-2 max-w-[220px] min-w-[180px]">
+              <div className="bg-white rounded-2xl border border-[#E5E5E5] shadow-sm p-4 flex flex-col items-center min-h-[160px]">
+                <div className="w-12 h-12 mb-2 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-xl flex items-center justify-center text-2xl">
+                  {getMealTypeIcon(meal.meal_type)}
+                </div>
+                <div className="font-semibold text-[#222] text-base truncate w-full text-center mb-1">{meal.dish}</div>
+                <div className="flex items-center text-xs text-gray-500 mb-1">
+                  <Clock className="w-3 h-3 text-[#3B82F6] mr-1" />
+                  {formatTime(meal.eaten_at)}
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center text-xs text-gray-600 mt-1">
+                  <span className="text-[#38B000] font-medium">{meal.kcal} ккал</span>
+                  <span>Б: {Math.round(meal.prot || 0)}г</span>
+                  <span>Ж: {Math.round(meal.fat || 0)}г</span>
+                  <span>У: {Math.round(meal.carb || 0)}г</span>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+    </div>
+  );
+};
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
@@ -156,6 +219,7 @@ const Index = () => {
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
         <HeroProgress />
+        <MobileMealsCarousel />
         <div className="mb-6 sm:mb-8">
           <DatabaseStatus />
         </div>
