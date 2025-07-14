@@ -471,6 +471,12 @@ const MobileHistoryScreen = () => (
   </div>
 );
 
+const MobileReportsScreen = () => (
+  <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
+    <ProReports />
+  </div>
+);
+
 const MobileProfileScreen = () => {
   const { data: profile, isLoading } = useUserProfile();
   const userProfile = profile?.[0];
@@ -493,6 +499,7 @@ const MOBILE_TABS = [
   { key: 'main', icon: '🏠', label: 'Главная' },
   { key: 'analytics', icon: '📊', label: 'Аналитика' },
   { key: 'history', icon: '📅', label: 'История' },
+  { key: 'reports', icon: '📥', label: 'Отчёты' },
   { key: 'profile', icon: '👤', label: 'Профиль' },
 ];
 
@@ -578,6 +585,7 @@ const Index = () => {
             {activeTab === 'main' && <MobileMainScreen />}
             {activeTab === 'analytics' && <MobileAnalyticsScreen />}
             {activeTab === 'history' && <MobileHistoryScreen />}
+            {activeTab === 'reports' && <MobileReportsScreen />}
             {activeTab === 'profile' && <MobileProfileScreen />}
           </>
         )}
