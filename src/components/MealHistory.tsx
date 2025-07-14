@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { useUserMeals } from '@/hooks/useSupabaseData';
 import { Skeleton } from '@/components/ui/skeleton';
+
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth <= 600;
 
 const MealHistory = () => {
   const { data: meals, isLoading, error } = useUserMeals(3); // Последние 3 дня
@@ -90,6 +92,9 @@ const MealHistory = () => {
     });
   };
 
+  // Мобильная версия: анимированное раскрытие истории
+  const isMob = isMobile();
+
   return (
     <div className="bg-white p-6 rounded-2xl border border-[#E5E5E5] shadow-sm animate-fade-in">
       <div className="flex items-center justify-between mb-6">
@@ -139,49 +144,55 @@ const MealHistory = () => {
           </button>
         </div>
       )}
-      {showAll && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black bg-opacity-40" onClick={() => setShowAll(false)}>
-          <div
-            className="w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl p-4 max-h-[80vh] overflow-y-auto animate-fade-in"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center mb-4">
+      {/* Мобильная версия: раскрытие истории без оверлея, с анимацией */}
+      {isMob && (
+        <div
+          className={`w-full left-0 top-0 z-40 transition-all duration-500 overflow-hidden ${showAll ? 'max-h-[90vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
+          style={{ position: 'absolute' }}
+        >
+          <div className="w-full bg-white rounded-t-2xl p-4 shadow-lg border-t border-[#E5E5E5] flex flex-col animate-fade-in">
+            <div className="flex items-center mb-4">
+              <button className="mr-2 p-2 -ml-2" onClick={() => setShowAll(false)}>
+                <ArrowLeft className="w-6 h-6 text-[#38B000]" />
+              </button>
               <h4 className="text-lg font-semibold text-[#222]">Вся история приёмов пищи</h4>
-              <button className="text-[#3B82F6] text-base" onClick={() => setShowAll(false)}>Закрыть</button>
             </div>
-            <div className="space-y-3">
-              {mealsData.map((meal, index) => (
-                <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-xl bg-[#F6FBF4] border border-[#E5E5E5]">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-lg flex items-center justify-center text-white text-lg">
-                      {getMealTypeIcon(meal.meal_type)}
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h4 className="text-[#222] font-medium truncate">{meal.dish}</h4>
-                      <span className="text-xs text-[#38B000] font-medium">{meal.kcal} ккал</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500 mb-1">
-                      <Clock className="w-3 h-3 text-[#3B82F6]" />
-                      <span>{formatTime(meal.eaten_at)}</span>
-                      <span>•</span>
-                      <span>{getMealTypeName(meal.meal_type)}</span>
-                      <span>•</span>
-                      <span>{formatDate(meal.eaten_at)}</span>
-                    </div>
-                    {(meal.prot || meal.fat || meal.carb) && (
-                      <div className="text-xs text-gray-500">
-                        Б: {Math.round(meal.prot || 0)}г • Ж: {Math.round(meal.fat || 0)}г • У: {Math.round(meal.carb || 0)}г
+            <div className="flex-1 overflow-y-auto" style={{ maxHeight: '65vh' }}>
+              <div className="space-y-3 pb-2">
+                {mealsData.map((meal, index) => (
+                  <div key={meal.id || index} className="flex items-center space-x-4 p-3 rounded-xl bg-[#F6FBF4] border border-[#E5E5E5]">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-gradient-to-br from-[#38B000] to-[#3B82F6] rounded-lg flex items-center justify-center text-white text-lg">
+                        {getMealTypeIcon(meal.meal_type)}
                       </div>
-                    )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h4 className="text-[#222] font-medium truncate">{meal.dish}</h4>
+                        <span className="text-xs text-[#38B000] font-medium">{meal.kcal} ккал</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-500 mb-1">
+                        <Clock className="w-3 h-3 text-[#3B82F6]" />
+                        <span>{formatTime(meal.eaten_at)}</span>
+                        <span>•</span>
+                        <span>{getMealTypeName(meal.meal_type)}</span>
+                        <span>•</span>
+                        <span>{formatDate(meal.eaten_at)}</span>
+                      </div>
+                      {(meal.prot || meal.fat || meal.carb) && (
+                        <div className="text-xs text-gray-500">
+                          Б: {Math.round(meal.prot || 0)}г • Ж: {Math.round(meal.fat || 0)}г • У: {Math.round(meal.carb || 0)}г
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
       )}
+      {/* Desktop: прежнее поведение (можно добавить при необходимости) */}
     </div>
   );
 };
