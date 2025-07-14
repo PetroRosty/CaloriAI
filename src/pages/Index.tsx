@@ -21,6 +21,7 @@ import { useTodayMeals, useUserProfile, calculateTodayTotals } from '@/hooks/use
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { useUserMeals } from '@/hooks/useSupabaseData';
 import { Clock } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
@@ -159,6 +160,74 @@ const MobileMealsCarousel = () => {
   );
 };
 
+const MobileMacros = () => {
+  const isMobile = useIsMobile();
+  const { data: todayMeals, isLoading: mealsLoading } = useTodayMeals();
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
+
+  if (!isMobile) return null;
+  if (mealsLoading || profileLoading) {
+    return (
+      <div className="flex flex-col gap-4 py-2">
+        {[1, 2, 3].map(i => (
+          <Skeleton key={i} className="h-24 rounded-2xl w-full" />
+        ))}
+      </div>
+    );
+  }
+  const meals = todayMeals || [];
+  const userProfile = profile?.[0];
+  const proteinGoal = userProfile?.daily_protein_goal || 150;
+  const fatGoal = userProfile?.daily_fat_goal || 80;
+  const carbsGoal = userProfile?.daily_carbs_goal || 220;
+  const totals = calculateTodayTotals(meals);
+  const macros = [
+    {
+      name: 'Белки',
+      value: Math.round(totals.protein),
+      goal: proteinGoal,
+      color: '#38B000',
+      bg: 'bg-[#38B000]/10',
+      bar: 'bg-[#38B000]'
+    },
+    {
+      name: 'Жиры',
+      value: Math.round(totals.fat),
+      goal: fatGoal,
+      color: '#D7263D',
+      bg: 'bg-[#D7263D]/10',
+      bar: 'bg-[#D7263D]'
+    },
+    {
+      name: 'Углеводы',
+      value: Math.round(totals.carbs),
+      goal: carbsGoal,
+      color: '#3B82F6',
+      bg: 'bg-[#3B82F6]/10',
+      bar: 'bg-[#3B82F6]'
+    }
+  ];
+  return (
+    <div className="flex flex-col gap-4 py-2 w-full">
+      {macros.map((macro, idx) => {
+        const percent = Math.min(100, Math.round((macro.value / macro.goal) * 100));
+        return (
+          <div key={macro.name} className={`rounded-2xl px-6 py-5 flex flex-col items-center ${macro.bg} shadow-md`}>
+            <div className="flex items-end gap-2 mb-1">
+              <span className="text-4xl font-extrabold" style={{ color: macro.color }}>{macro.value}</span>
+              <span className="text-base text-gray-500 font-medium">/ {macro.goal} г</span>
+            </div>
+            <div className="text-lg font-semibold mb-2" style={{ color: macro.color }}>{macro.name}</div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className={`h-3 rounded-full transition-all duration-500 ${macro.bar}`} style={{ width: `${percent}%` }}></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const Index = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile();
@@ -220,6 +289,7 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
         <HeroProgress />
         <MobileMealsCarousel />
+        <MobileMacros />
         <div className="mb-6 sm:mb-8">
           <DatabaseStatus />
         </div>
