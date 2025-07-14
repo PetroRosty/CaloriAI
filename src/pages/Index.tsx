@@ -24,13 +24,50 @@ import { Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
 const HeroProgress = () => {
   const isMobile = useIsMobile();
   const { data: todayMeals, isLoading: mealsLoading } = useTodayMeals();
   const { data: profile, isLoading: profileLoading } = useUserProfile();
+
+  const animationDuration = 1200; // ms
+  const [animatedPercent, setAnimatedPercent] = React.useState(0);
+  const [animatedCalories, setAnimatedCalories] = React.useState(0);
+  const [showLabels, setShowLabels] = React.useState(false);
+  const requestRef = useRef();
+
+  useEffect(() => {
+    if (mealsLoading || profileLoading) return;
+    const meals = todayMeals || [];
+    const userProfile = profile?.[0];
+    const dailyGoal = userProfile?.daily_calories_goal || 2200;
+    const totals = calculateTodayTotals(meals);
+    const consumed = totals.calories;
+    const percent = Math.min(100, (consumed / dailyGoal) * 100);
+    let start;
+    function animate(ts) {
+      if (!start) start = ts;
+      const progress = Math.min(1, (ts - start) / animationDuration);
+      setAnimatedPercent(percent * progress);
+      setAnimatedCalories(consumed * progress);
+      if (progress < 1) {
+        requestRef.current = requestAnimationFrame(animate);
+      } else {
+        setAnimatedPercent(percent);
+        setAnimatedCalories(consumed);
+        setTimeout(() => setShowLabels(true), 200);
+      }
+    }
+    setShowLabels(false);
+    setAnimatedPercent(0);
+    setAnimatedCalories(0);
+    cancelAnimationFrame(requestRef.current);
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+    // eslint-disable-next-line
+  }, [mealsLoading, profileLoading, todayMeals, profile]);
 
   if (!isMobile) return null;
   if (mealsLoading || profileLoading) {
@@ -51,7 +88,7 @@ const HeroProgress = () => {
   const stroke = 14;
   const normalizedRadius = radius - stroke / 2;
   const circumference = 2 * Math.PI * normalizedRadius;
-  const progress = (percentage / 100) * circumference;
+  const progress = (animatedPercent / 100) * circumference;
   return (
     <div className="flex flex-col items-center justify-center py-8 w-full">
       <div className="relative w-full flex justify-center">
@@ -74,7 +111,7 @@ const HeroProgress = () => {
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(.4,2,.3,1)' }}
+            style={{ transition: 'stroke-dashoffset 0.2s cubic-bezier(.4,2,.3,1)' }}
           />
           <text
             x="50%"
@@ -85,28 +122,25 @@ const HeroProgress = () => {
             fontWeight="bold"
             fill="#222"
           >
-            {consumed.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}
-          </text>
-          <text
-            x="50%"
-            y="60%"
-            textAnchor="middle"
-            fontSize="1.05rem"
-            fill="#9ca3af"
-          >
-            ккал съедено
+            {animatedCalories.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}
           </text>
         </svg>
         {/* % сбоку справа от кольца на мобильном */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center">
-          <span className="text-[#38B000] text-lg font-bold leading-none">{Math.round(percentage)}%</span>
+          <span className="text-[#38B000] text-lg font-bold leading-none">{Math.round(animatedPercent)}%</span>
           <span className="text-xs text-gray-400">от цели</span>
         </div>
       </div>
-      <div className="mt-4 text-base font-medium text-[#222] text-center px-2">
+      <div
+        className={`mt-4 text-base font-medium text-[#222] text-center px-2 transition-all duration-500 ${showLabels ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        style={{ transitionDelay: showLabels ? '0.1s' : '0s' }}
+      >
         Осталось: <span className="text-[#38B000] font-bold">{remaining.toLocaleString('ru-RU', { maximumFractionDigits: 1 })} ккал</span>
       </div>
-      <div className="text-base text-gray-500 text-center px-2 mt-1">
+      <div
+        className={`text-base text-gray-500 text-center px-2 mt-1 transition-all duration-500 ${showLabels ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        style={{ transitionDelay: showLabels ? '0.25s' : '0s' }}
+      >
         Цель: <span className="font-semibold">{dailyGoal.toLocaleString('ru-RU', { maximumFractionDigits: 1 })} ккал</span> <span className="text-xs">(меняется через Telegram)</span>
       </div>
     </div>
