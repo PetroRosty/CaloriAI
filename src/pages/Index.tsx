@@ -499,7 +499,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#f7faf7] pb-20">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-8">
-        {/* Мобильные секции с увеличенными отступами и светлым фоном */}
+        {/* Только новый мобильный интерфейс */}
         {isMobile && (
           <>
             <div className="bg-white rounded-3xl shadow-md px-3 py-6 mb-5">
